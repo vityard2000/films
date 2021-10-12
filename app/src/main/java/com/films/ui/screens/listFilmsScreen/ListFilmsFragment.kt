@@ -1,10 +1,6 @@
 package com.films.ui.screens.listFilmsScreen
 
-
-import android.graphics.Point
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,12 +12,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.films.FilmsApplication
 import com.films.databinding.FragmentListFilmsBinding
 import com.films.ui.adapters.FilmsAdapter
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 
 class ListFilmsFragment : Fragment() {
-
+   // val navHostFragment =
+        //Navigation.findNavController(requireActivity(), R.id.nav_graph)
+    //val navController = navHostFragment
     private var _viewBinding: FragmentListFilmsBinding? = null
     private val viewBinding get() = _viewBinding!!
     private lateinit var viewModel: ListFilmsViewModel
@@ -57,11 +57,21 @@ class ListFilmsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _viewBinding = FragmentListFilmsBinding.inflate(layoutInflater)
+        viewLifecycleOwner.lifecycleScope.launch{
+            viewModel.isLoading.collect {
+                viewBinding.progress.isIndeterminate = it
+            }
+        }
+
         return viewBinding.root
     }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        adapter.onClickItem = {
+
+        }
         viewBinding.fragmentListFilmsRv.adapter = adapter
        // Log.d("mylog", (viewBinding.fragmentListFilmsRv.measuredWidth / 100).toString())
 
@@ -70,7 +80,10 @@ class ListFilmsFragment : Fragment() {
         lifecycleScope.launch{
             viewModel.films.collectLatest(adapter::submitData)
         }
-
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
+    }
 }

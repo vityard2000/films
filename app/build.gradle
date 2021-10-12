@@ -17,7 +17,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField 'String', 'FILMS_API_KEY', '"NcGDYZJlW5sXWxYEMqny9u3EGkL3COQO"'
+        buildConfigField 'String', 'FILMS_API_KEY', '"LHlfgEOXdQbbeZh3Twc58YWviYp0lETJ"'
     }
 
     buildTypes {

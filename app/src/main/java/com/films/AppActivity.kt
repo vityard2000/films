@@ -13,7 +13,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         setTheme(R.style.Theme_Films)
         super.onCreate(savedInstanceState)
 
-        navController = Navigation.findNavController(this, R.id.nav_host)
+        //navController = Navigation.findNavController(this, R.id.nav_host)
 
     }
 }

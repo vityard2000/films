@@ -1,9 +1,8 @@
 package com.films.data.network
-
 import com.films.data.network.model.FilmDto
 import com.films.data.network.model.LinkDto
 import com.films.data.network.model.MultimediaDto
-import com.films.domain.FilmsRepository
+import com.films.domain.interfaces.FilmsRepository
 import com.films.domain.entities.Film
 import com.films.domain.entities.Link
 import com.films.domain.entities.Multimedia
@@ -13,11 +12,11 @@ class NetworkFilmsRepositoryService(private val retrofit: Retrofit): FilmsReposi
     override suspend fun loadFilms(page: Int): List<Film> {
         val offset = (page-1)*20
 
-        val films = retrofit.create(FilmsService::class.java).getFilms(offset).body()?.let{
-             it.results?.map{it.toFilm()}
+        val films = retrofit.create(FilmsService::class.java).getFilms(offset).body()?.let{ filmsResponse ->
+            filmsResponse.results?.map{it.toFilm()}
             }
 
-        return films!! //обработать все случаи
+        return films?:listOf() //обработать все случаи
     }
 
     companion object {
@@ -25,8 +24,8 @@ class NetworkFilmsRepositoryService(private val retrofit: Retrofit): FilmsReposi
         fun FilmDto.toFilm(): Film {
             return Film(
                 displayTitle = displayTitle,
-                link = link.toLink(),
-                multimedia = multimedia.toMultimedia(),
+                link = link?.toLink(),
+                multimedia = multimedia?.toMultimedia(),
                 dateUpdated = dateUpdated,
                 publicationDate = publicationDate,
                 summaryShort = summaryShort,

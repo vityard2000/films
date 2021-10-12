@@ -6,8 +6,8 @@ import java.io.Serializable
 
 data class Film(
     val displayTitle: String? = "",
-    val link: Link?,
-    val multimedia: Multimedia?,
+    val link: Link? = Link(),
+    val multimedia: Multimedia? = Multimedia(),
     val dateUpdated: String? = "",
     val publicationDate: String? = "",
     val summaryShort: String? = "",
