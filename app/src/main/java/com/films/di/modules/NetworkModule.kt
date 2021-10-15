@@ -1,5 +1,6 @@
 package com.films.di.modules
 
+import com.films.data.network.NetworkFilmsRepositoryService
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -19,5 +20,10 @@ class NetworkModule {
             //.client(httpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+    @Singleton
+    @Provides
+    fun provideNetworkFilmsRepositoryService(retrofit: Retrofit): NetworkFilmsRepositoryService {
+        return NetworkFilmsRepositoryService(retrofit)
     }
 }

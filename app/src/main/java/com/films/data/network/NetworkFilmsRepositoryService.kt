@@ -1,22 +1,21 @@
 package com.films.data.network
+import android.util.Log
 import com.films.data.network.model.FilmDto
+import com.films.data.network.model.FilmsResponse
 import com.films.data.network.model.LinkDto
 import com.films.data.network.model.MultimediaDto
 import com.films.domain.interfaces.FilmsRepository
 import com.films.domain.entities.Film
 import com.films.domain.entities.Link
 import com.films.domain.entities.Multimedia
+import retrofit2.Response
 import retrofit2.Retrofit
 
 class NetworkFilmsRepositoryService(private val retrofit: Retrofit): FilmsRepository{
-    override suspend fun loadFilms(page: Int): List<Film> {
+    override suspend fun loadFilms(page: Int): Response<FilmsResponse> {
         val offset = (page-1)*20
 
-        val films = retrofit.create(FilmsService::class.java).getFilms(offset).body()?.let{ filmsResponse ->
-            filmsResponse.results?.map{it.toFilm()}
-            }
-
-        return films?:listOf() //обработать все случаи
+        return retrofit.create(FilmsService::class.java).getFilms(offset)
     }
 
     companion object {

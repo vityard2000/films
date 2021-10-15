@@ -23,7 +23,7 @@ class FilmFragment : Fragment() {
 
         arguments?.let {bundle ->
             viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
-                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return FilmViewModel(bundle.getSerializable(KEY_FILM) as Film) as T
                 }
             }).get(FilmViewModel::class.java)

@@ -1,14 +1,15 @@
 package com.films.di
 
+import com.films.data.network.NetworkFilmsRepositoryService
 import com.films.di.modules.AppModule
+import com.films.di.modules.BDModule
 import com.films.di.modules.FilmsModule
 import com.films.di.modules.NetworkModule
-import com.films.domain.useCases.LoadFilmsUC
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [FilmsModule::class, AppModule::class, NetworkModule::class])
+@Component(modules = [FilmsModule::class, AppModule::class, NetworkModule::class, BDModule::class])
 interface ApplicationComponent {
-    fun getLoadFilmsUC(): LoadFilmsUC
+    fun getNetworkFilmsRepositoryService(): NetworkFilmsRepositoryService
 }

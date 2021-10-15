@@ -11,11 +11,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.films.R
-import com.films.databinding.ItemFilmBinding
 import com.films.domain.entities.Film
 
 class FilmsAdapter(val context: Context):
-    PagingDataAdapter<Film, FilmsAdapter.FilmsViewHolder>(ArticleDiffItemCallback) {
+    PagingDataAdapter<Film, FilmsAdapter.FilmsViewHolder>(FilmDiffItemCallback) {
         var onClickItem = { film: Film ->
         }
         private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
@@ -56,7 +55,7 @@ class FilmsAdapter(val context: Context):
 
 
 
-    private object ArticleDiffItemCallback : DiffUtil.ItemCallback<Film>() {
+    private object FilmDiffItemCallback : DiffUtil.ItemCallback<Film>() {
 
         override fun areItemsTheSame(oldItem: Film, newItem: Film): Boolean {
             return oldItem == newItem

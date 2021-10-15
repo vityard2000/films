@@ -15,7 +15,6 @@ import com.films.ui.adapters.FilmsAdapter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 
 class ListFilmsFragment : Fragment() {
@@ -39,12 +38,12 @@ class ListFilmsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val loadFilmsUC = (requireActivity().application as FilmsApplication)
-            .applicationComponent.getLoadFilmsUC()
+        val networkFilmsRepositoryService = (requireActivity().application as FilmsApplication)
+            .applicationComponent.getNetworkFilmsRepositoryService()
 
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return ListFilmsViewModel(loadFilmsUC) as T
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return ListFilmsViewModel(networkFilmsRepositoryService) as T
             }
         }).get(ListFilmsViewModel::class.java)
 
@@ -57,12 +56,6 @@ class ListFilmsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _viewBinding = FragmentListFilmsBinding.inflate(layoutInflater)
-        viewLifecycleOwner.lifecycleScope.launch{
-            viewModel.isLoading.collect {
-                viewBinding.progress.isIndeterminate = it
-            }
-        }
-
         return viewBinding.root
     }
 
@@ -72,13 +65,14 @@ class ListFilmsFragment : Fragment() {
         adapter.onClickItem = {
 
         }
-        viewBinding.fragmentListFilmsRv.adapter = adapter
-       // Log.d("mylog", (viewBinding.fragmentListFilmsRv.measuredWidth / 100).toString())
 
         viewBinding.fragmentListFilmsRv.layoutManager = GridLayoutManager(context, 3)
-
-        lifecycleScope.launch{
+        viewBinding.fragmentListFilmsRv.adapter = adapter
+        lifecycleScope.launchWhenStarted{
             viewModel.films.collectLatest(adapter::submitData)
+           //viewModel.isLoading.collect {
+           //    viewBinding.progress.isIndeterminate = it
+           //}
         }
     }
 

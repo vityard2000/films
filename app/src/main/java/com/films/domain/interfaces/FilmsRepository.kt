@@ -4,5 +4,5 @@ import com.films.domain.entities.Film
 
 
 interface FilmsRepository {
-    suspend fun loadFilms(page: Int): List<Film>
+    suspend fun loadFilms(page: Int): Any
 }

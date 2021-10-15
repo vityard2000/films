@@ -2,9 +2,13 @@ package com.films.data.network
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.films.data.network.NetworkFilmsRepositoryService.Companion.toFilm
 import com.films.domain.entities.Film
+import retrofit2.HttpException
 
-class FilmsPagingSource(private val films: List<Film>): PagingSource<Int, Film>() {
+class FilmsPagingSource(
+    private val RepositoryService: NetworkFilmsRepositoryService
+) : PagingSource<Int, Film>() {
 
     override fun getRefreshKey(state: PagingState<Int, Film>): Int? {
         val anchorPosition = state.anchorPosition ?: return null
@@ -14,10 +18,17 @@ class FilmsPagingSource(private val films: List<Film>): PagingSource<Int, Film>(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Film> {
-        val page:Int = params.key ?: 1
-        val nextPage = if(films.size < 20) null else page + 1
-        val prevPage = if(page == 1) null else page - 1
+        val page = params.key ?: 1
+        val response = RepositoryService.loadFilms(page)
+        if (response.isSuccessful){
+            val films = checkNotNull(response.body()?.results?.map { filmDto ->  filmDto.toFilm()})
+            val nextPage = if(films.size < 20) null else page + 1
+            val prevPage = if(page == 1) null else page -1
+            return LoadResult.Page(films, prevPage, nextPage)
+        } else {
+            return LoadResult.Error(HttpException(response))
+        }
 
-        return LoadResult.Page(films, prevPage, nextPage)
+
     }
 }
